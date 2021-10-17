@@ -1,39 +1,15 @@
-from functools import wraps
 from http import HTTPStatus
-from typing import Union
 
+from distr_bank.middlewares import with_account
 from distr_bank.models.account import Account
 from distr_bank.repos.base_repo import BaseRepo
 from distr_bank.repos.in_memory_repo import InMemoryRepo
-from distr_bank.typing import JsonObject, Response
+from distr_bank.typing import Response
+from distr_bank.utils.http_error import create_error
 from flask import Blueprint, request
 
 bp = Blueprint("accounts", __name__)
 accounts_repo: BaseRepo[Account] = InMemoryRepo()
-
-
-def with_account(repo: BaseRepo[Account]):
-    def wrapper(func):
-        @wraps(func)
-        def wrapped(account_id, *args, **kwargs):
-            account = repo.get(account_id)
-
-            if not account:
-                return create_error("account id not found", HTTPStatus.NOT_FOUND)
-
-            return func(account, *args, **kwargs)
-
-        return wrapped
-
-    return wrapper
-
-
-def create_error(message: str, status_code: Union[HTTPStatus, int]) -> JsonObject:
-    body = {
-        "status_code": status_code,
-        "message": message,
-    }
-    return body, status_code
 
 
 @bp.post("/accounts/<int:account_id>/lock")
