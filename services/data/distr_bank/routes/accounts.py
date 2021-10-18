@@ -1,6 +1,6 @@
 from http import HTTPStatus
 
-from distr_bank.middlewares import with_account
+from distr_bank.middlewares import TransactionLogger, with_account
 from distr_bank.models.account import Account
 from distr_bank.repos.base_repo import BaseRepo
 from distr_bank.repos.in_memory_repo import InMemoryRepo
@@ -11,8 +11,11 @@ from flask import Blueprint, request
 bp = Blueprint("accounts", __name__)
 accounts_repo: BaseRepo[Account] = InMemoryRepo()
 
+with_transaction_log = TransactionLogger()
+
 
 @bp.post("/accounts/<int:account_id>/lock")
+@with_transaction_log
 @with_account(accounts_repo)
 def post_lock(account: Account) -> Response:
     if account.is_locked:
@@ -28,6 +31,7 @@ def post_lock(account: Account) -> Response:
 
 
 @bp.post("/accounts/<int:account_id>/unlock")
+@with_transaction_log
 @with_account(accounts_repo)
 def post_unlock(account: Account) -> Response:
     if not account.is_locked:
@@ -48,12 +52,14 @@ def post_unlock(account: Account) -> Response:
 
 
 @bp.get("/accounts/<int:account_id>")
+@with_transaction_log
 @with_account(accounts_repo)
 def get_account(account: Account) -> Response:
     return account.as_dict(), HTTPStatus.OK
 
 
 @bp.put("/accounts/<int:account_id>")
+@with_transaction_log
 @with_account(accounts_repo)
 def put_account(account: Account) -> Response:
     json = request.get_json()
