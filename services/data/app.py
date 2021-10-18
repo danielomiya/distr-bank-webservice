@@ -1,4 +1,4 @@
-from distr_bank.routes.accounts import bp as accounts
+from distr_bank.data.routes.accounts import bp as accounts
 from flask import Flask
 
 app = Flask(__name__)

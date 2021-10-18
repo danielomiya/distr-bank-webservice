@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from distr_bank.models.entity import Entity
-from distr_bank.models.lockable import Lockable
+from distr_bank.data.models.entity import Entity
+from distr_bank.data.models.lockable import Lockable
 
 
 @dataclass

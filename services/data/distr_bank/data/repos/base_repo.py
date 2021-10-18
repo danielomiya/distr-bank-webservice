@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from typing import Generic, TypeVar
 
-from distr_bank.models.entity import Entity
+from distr_bank.data.models.entity import Entity
 
 T = TypeVar("T", Entity, object)
 

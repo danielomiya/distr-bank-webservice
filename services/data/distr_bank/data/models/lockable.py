@@ -2,7 +2,7 @@ from abc import ABCMeta
 from dataclasses import dataclass
 from uuid import uuid4
 
-from distr_bank.exceptions import LockException
+from distr_bank.data.exceptions import LockException
 
 
 @dataclass

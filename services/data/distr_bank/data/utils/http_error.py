@@ -1,7 +1,7 @@
 from http import HTTPStatus
 from typing import Union
 
-from distr_bank.typing import JsonObject
+from distr_bank.data.typing import JsonObject
 
 
 def create_error(message: str, status_code: Union[HTTPStatus, int]) -> JsonObject:

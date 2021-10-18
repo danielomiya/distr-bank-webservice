@@ -1,11 +1,11 @@
 from http import HTTPStatus
 
-from distr_bank.middlewares import TransactionLogger, with_account
-from distr_bank.models.account import Account
-from distr_bank.repos.base_repo import BaseRepo
-from distr_bank.repos.in_memory_repo import InMemoryRepo
-from distr_bank.typing import Response
-from distr_bank.utils.http_error import create_error
+from distr_bank.data.middlewares import TransactionLogger, with_account
+from distr_bank.data.models.account import Account
+from distr_bank.data.repos.base_repo import BaseRepo
+from distr_bank.data.repos.in_memory_repo import InMemoryRepo
+from distr_bank.data.typing import Response
+from distr_bank.data.utils.http_error import create_error
 from flask import Blueprint, request
 
 bp = Blueprint("accounts", __name__)

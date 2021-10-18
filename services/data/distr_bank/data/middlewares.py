@@ -5,10 +5,10 @@ from http import HTTPStatus
 from itertools import count
 from logging import FileHandler
 
-from distr_bank.models.account import Account
-from distr_bank.repos.base_repo import BaseRepo
-from distr_bank.utils.http_error import create_error
-from distr_bank.utils.logger_mixin import LoggerMixin
+from distr_bank.data.models.account import Account
+from distr_bank.data.repos.base_repo import BaseRepo
+from distr_bank.data.utils.http_error import create_error
+from distr_bank.data.utils.logger_mixin import LoggerMixin
 from flask import request
 
 

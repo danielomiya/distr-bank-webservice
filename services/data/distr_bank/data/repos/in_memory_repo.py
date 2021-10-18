@@ -1,8 +1,8 @@
 from collections.abc import Sized
 from typing import Dict
 
-from distr_bank.repos.base_repo import BaseRepo, T
-from distr_bank.utils.logger_mixin import LoggerMixin
+from distr_bank.data.repos.base_repo import BaseRepo, T
+from distr_bank.data.utils.logger_mixin import LoggerMixin
 
 
 class InMemoryRepo(BaseRepo[T], LoggerMixin, Sized):
