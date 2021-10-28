@@ -15,6 +15,12 @@ class Lockable(metaclass=ABCMeta):
 
     @property
     def is_locked(self) -> bool:
+        """
+        Gets whether the instance is locked or not
+
+        Returns:
+            bool: whether it's locked
+        """
         return self._lock is not None
 
     def acquire(self) -> str:

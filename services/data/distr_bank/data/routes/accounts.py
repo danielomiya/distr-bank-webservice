@@ -75,14 +75,14 @@ def put_account(account: Account) -> Response:
 
 
 @bp.post("/accounts/_seed")
-def seed():
+def seed() -> Response:
     for _ in range(1000):
         accounts_repo.add(Account(balance=1000.0))
     return "", HTTPStatus.NO_CONTENT
 
 
 @bp.post("/accounts/_clear")
-def clear():
+def clear() -> Response:
     if not isinstance(accounts_repo, InMemoryRepo):
         return "", HTTPStatus.INTERNAL_SERVER_ERROR
 

@@ -8,7 +8,7 @@ class LoggerMixin(metaclass=ABCMeta):
     Mixin to enable out-of-the-box logging
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """
         LoggerMixin constructor
         """

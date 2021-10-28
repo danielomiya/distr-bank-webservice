@@ -13,6 +13,17 @@ from flask import request
 
 
 def with_account(repo: BaseRepo[Account]):
+    """
+    Decorator to get the account requested from the supplied repository
+    or, if not found, return an error accordingly
+
+    Args:
+        repo (BaseRepo[Account]): repository
+
+    Returns:
+        callable: wrapped function
+    """
+
     def wrapper(func):
         @wraps(func)
         def wrapped(account_id, *args, **kwargs):
@@ -29,7 +40,14 @@ def with_account(repo: BaseRepo[Account]):
 
 
 class TransactionLogger(LoggerMixin):
-    def __init__(self):
+    """
+    Class to implement logging of the transactions
+    """
+
+    def __init__(self) -> None:
+        """
+        TransactionLogger constructor
+        """
         super().__init__()
 
         self.seq = count(1)
@@ -37,7 +55,17 @@ class TransactionLogger(LoggerMixin):
         self.log.addHandler(FileHandler(f"logs/{now}.log", mode="w"))
         self.log.setLevel(logging.INFO)
 
-    def __call__(self, func):
+    def __call__(self, func: callable) -> callable:
+        """
+        Works as an decorator to log successful responses to an external file
+
+        Args:
+            func (callable): function to be wrapped
+
+        Returns:
+            callable: wrapped function
+        """
+
         @wraps(func)
         def wrapped(*args, **kwargs):
             result = func(*args, **kwargs)
