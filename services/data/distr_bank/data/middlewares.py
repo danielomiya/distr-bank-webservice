@@ -71,15 +71,16 @@ class TransactionLogger(LoggerMixin):
             result = func(*args, **kwargs)
             account_id = kwargs.get("account_id")
             _, status_code = result
+            requested_by = request.headers.get("X-Requested-By", "null")
 
             if 200 <= status_code < 300:
                 body = request.get_json() or {}
 
                 self.log.info(
-                    "[%s] %d - - Origin: %d, Operation: %s, Account ID: %d, Value: %s",
+                    "[%s] %d - - Origin: %s, Operation: %s, Account ID: %d, Value: %s",
                     datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                     next(self.seq),
-                    0,  # TODO: replace by the id of the server whom requested
+                    requested_by,
                     func.__name__,
                     account_id,
                     body.get("balance", "null"),
