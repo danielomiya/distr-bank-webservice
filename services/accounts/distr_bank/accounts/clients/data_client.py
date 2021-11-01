@@ -63,7 +63,10 @@ class DataClient(BaseClient):
         """
         super().__init__()
         self.base_url = base_url
-        self.token = token
+
+        if token and token.startswith("Bearer "):
+            token = token[7:]
+
         self.session.auth = DataAuth(user_agent=user_agent, token=token)
 
     @handle_response
