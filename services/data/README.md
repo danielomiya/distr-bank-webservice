@@ -116,8 +116,3 @@ Considerando o trecho acima e as limitações do protocolo HTTP, o bloqueio de u
       "id": 1,
       "is_locked": false
     }
-
-## To do
-
-- salvar os dados de maneira persistente
-- _endpoints_ de criação e deleção de contas
