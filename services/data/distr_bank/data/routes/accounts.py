@@ -1,6 +1,6 @@
 from http import HTTPStatus
 
-from distr_bank.data.middlewares import TransactionLogger, with_account
+from distr_bank.data.middlewares import TransactionLogger, require_auth, with_account
 from distr_bank.data.models.account import Account
 from distr_bank.data.repos.base_repo import BaseRepo
 from distr_bank.data.repos.in_memory_repo import InMemoryRepo
@@ -17,6 +17,7 @@ with_transaction_log = TransactionLogger()
 @bp.post("/accounts/<int:account_id>/lock")
 @with_transaction_log
 @with_account(accounts_repo)
+@require_auth
 def post_lock(account: Account) -> Response:
     if account.is_locked:
         return create_error("resource already locked", HTTPStatus.CONFLICT)
@@ -33,6 +34,7 @@ def post_lock(account: Account) -> Response:
 @bp.post("/accounts/<int:account_id>/unlock")
 @with_transaction_log
 @with_account(accounts_repo)
+@require_auth
 def post_unlock(account: Account) -> Response:
     if not account.is_locked:
         return create_error("resource already unlocked", HTTPStatus.CONFLICT)
@@ -54,6 +56,7 @@ def post_unlock(account: Account) -> Response:
 @bp.get("/accounts/<int:account_id>")
 @with_transaction_log
 @with_account(accounts_repo)
+@require_auth
 def get_account(account: Account) -> Response:
     return account.as_dict(), HTTPStatus.OK
 
@@ -61,6 +64,7 @@ def get_account(account: Account) -> Response:
 @bp.put("/accounts/<int:account_id>")
 @with_transaction_log
 @with_account(accounts_repo)
+@require_auth
 def put_account(account: Account) -> Response:
     json = request.get_json()
     lock = json.get("lock")
@@ -75,6 +79,7 @@ def put_account(account: Account) -> Response:
 
 
 @bp.post("/accounts/_seed")
+@require_auth
 def seed() -> Response:
     for _ in range(1000):
         accounts_repo.add(Account(balance=1000.0))
@@ -82,6 +87,7 @@ def seed() -> Response:
 
 
 @bp.post("/accounts/_clear")
+@require_auth
 def clear() -> Response:
     if not isinstance(accounts_repo, InMemoryRepo):
         return "", HTTPStatus.INTERNAL_SERVER_ERROR
