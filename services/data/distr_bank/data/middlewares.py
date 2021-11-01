@@ -5,6 +5,7 @@ from http import HTTPStatus
 from itertools import count
 from logging import FileHandler
 
+import jwt
 from distr_bank.data.models.account import Account
 from distr_bank.data.repos.base_repo import BaseRepo
 from distr_bank.data.utils.http_error import create_error
@@ -88,3 +89,37 @@ class TransactionLogger(LoggerMixin):
             return result
 
         return wrapped
+
+
+def require_auth(func: callable) -> callable:
+    """
+    Given a function, wraps it with auth checks
+
+    Args:
+        func (callable): function to be wrapped
+
+    Returns:
+        callable: wrapped function
+    """
+
+    @wraps(func)
+    def wrapped(*args, **kwargs):
+        auth = request.headers["Authorization"]
+
+        if not auth:
+            return create_error("authorization header missing", HTTPStatus.UNAUTHORIZED)
+
+        token = auth[7:]
+        claims = jwt.decode(
+            token,
+            key="secret",
+            algorithm="HS256",
+            options={"require": ["exp", "iss", "aud", "sub", "iat"]},
+        )
+
+        if claims:
+            return func(*args, **kwargs)
+
+        return create_error("could not auth correctly", HTTPStatus.FORBIDDEN)
+
+    return wrapped
