@@ -72,7 +72,7 @@ class TransactionLogger(LoggerMixin):
             result = func(*args, **kwargs)
             account_id = kwargs.get("account_id")
             _, status_code = result
-            requested_by = request.headers.get("X-Requested-By", "null")
+            requested_by = request.headers.get("User-Agent", "null")
 
             if 200 <= status_code < 300:
                 body = request.get_json() or {}
