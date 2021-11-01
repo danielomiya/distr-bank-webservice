@@ -104,22 +104,28 @@ def require_auth(func: callable) -> callable:
 
     @wraps(func)
     def wrapped(*args, **kwargs):
-        auth = request.headers["Authorization"]
+        auth = request.headers.get("Authorization")
 
         if not auth:
             return create_error("authorization header missing", HTTPStatus.UNAUTHORIZED)
 
         token = auth[7:]
-        claims = jwt.decode(
-            token,
-            key="secret",
-            algorithm="HS256",
-            options={"require": ["exp", "iss", "aud", "sub", "iat"]},
-        )
+
+        try:
+            claims = jwt.decode(
+                token,
+                key="secret",
+                algorithms=["HS256"],
+                audience="business client",
+            )
+        except jwt.exceptions.PyJWTError:
+            return create_error(
+                "could not auth the given token", HTTPStatus.UNAUTHORIZED
+            )
 
         if claims:
             return func(*args, **kwargs)
 
-        return create_error("could not auth correctly", HTTPStatus.FORBIDDEN)
+        return create_error("unexpected behavior", HTTPStatus.INTERNAL_SERVER_ERROR)
 
     return wrapped
